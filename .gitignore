@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+*.so
+build/
+dist/
+*.egg-info/
+.cache/
+.ipynb_checkpoints
+.vscode/
+*.pt
+*.ckpt
+logs/
+results/bench.csv
+results/plots/
