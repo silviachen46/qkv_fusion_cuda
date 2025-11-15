@@ -1,6 +1,6 @@
-# torch_integration/fused_qkv_python.py
 import torch
 from typing import Tuple, Optional
+from rope import apply_rope
 
 @torch.no_grad()
 def fused_qkv_python(
@@ -23,5 +23,13 @@ def fused_qkv_python(
     k = k.view(B, n_heads, head_dim)
     v = v.view(B, n_heads, head_dim)
 
-    # (可选) RoPE / KV 写回：先跳过，等对齐后再加
+    # apply rope
+    if rope is not None:
+        cos, sin = rope
+        q, k = apply_rope(q, k, cos, sin)
+
+    # kv cache
+    if kv_cache is not None and token_pos is not None:
+        kv_cache["K"][layer_id, :, token_pos] = k  
+        kv_cache["V"][layer_id, :, token_pos] = v
     return q, k, v
